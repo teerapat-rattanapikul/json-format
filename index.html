@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to JSON Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #json-viewer {
+            width: 100%;
+            margin-top: 10px;
+            text-align: left;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        #copy-button {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/abodelot/jquery.json-viewer/json-viewer/jquery.json-viewer.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abodelot/jquery.json-viewer/json-viewer/jquery.json-viewer.css" />
+</head>
+<body>
+
+    <h2>Text to JSON Viewer</h2>
+
+    <textarea id="textInput" placeholder="Enter long text..."></textarea>
+    
+    <button onclick="convertToJSON()">Transform to JSON</button>
+
+    <div id="json-viewer"></div>
+    <div id="error-message"></div>
+    
+    <button id="copy-button" onclick="copyToClipboard()">Copy Result</button>
+
+    <script>
+        function convertToJSON() {
+            var textInput = document.getElementById('textInput').value;
+            var jsonViewer = document.getElementById('json-viewer');
+            var errorMessage = document.getElementById('error-message');
+
+            try {
+                var jsonObject = JSON.parse(textInput);
+
+                jsonViewer.innerHTML = '';
+                errorMessage.innerHTML = '';
+                $(jsonViewer).jsonViewer(jsonObject, { collapsed: false });
+            } catch (error) {
+                jsonViewer.innerHTML = '';
+                errorMessage.innerHTML = '<div>Error parsing JSON. Please check your input.</div>';
+            }
+        }
+
+        function copyToClipboard() {
+            var jsonViewer = document.getElementById('json-viewer');
+            var range = document.createRange();
+            range.selectNode(jsonViewer);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+
+</body>
+</html>
